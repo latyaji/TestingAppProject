@@ -23,7 +23,7 @@ export const Login = ({ navigation }) => {
     if (username === registeruser && password === registeruserpassword) {
       navigation.navigate('Dashboard');
       setUsername('')
-      setPassword('')
+      setPassword('') // 
     } else {
       Alert.alert('Login Failed', 'Invalid username or password.');
     }
