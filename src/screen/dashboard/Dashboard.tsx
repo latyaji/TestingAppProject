@@ -58,8 +58,7 @@ export const Dashboard = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.apidatacontainer}
                 key={id.toString()}
-                onPress={() => getdata(item)}
-              >
+                onPress={() => getdata(item)} >
                 <Text style={styles.titletxt}>{item.title}</Text>
                 <Text>{item.body}</Text>
               </TouchableOpacity>
