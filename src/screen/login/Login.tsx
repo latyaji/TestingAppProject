@@ -57,6 +57,7 @@ export const Login = ({ navigation }) => {
               secureTextEntry={!showPassword}
               onChangeText={(text) => setPassword(text)}
               value={password}
+              style={{margin: Platform.OS === "ios" ? 15 : null, }}
             />
             <TouchableOpacity onPress={toggleShowPassword}>
               <Text style={{marginRight:12,marginTop:12,fontWeight:"bold",color:"#000"}}>{showPassword ? 'Hide' : 'Show'}</Text>
