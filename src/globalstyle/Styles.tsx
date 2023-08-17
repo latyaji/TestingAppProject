@@ -1,4 +1,5 @@
 import {StyleSheet,Platform} from 'react-native'
+
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -9,6 +10,7 @@ export const styles = StyleSheet.create({
       fontWeight: "bold",
       alignSelf: "center",
       color: "#116D6E",
+      paddingVertical:26
     },
     labeltxt: {
       marginTop: 12,
@@ -23,7 +25,8 @@ export const styles = StyleSheet.create({
       marginHorizontal: 12,
       borderRadius: 6,
       padding: Platform.OS === "ios" ? 13 : null,
-      color: "#000"
+      color: "#000",
+      paddingLeft:12
     },
     passwordinputfield:{
       borderWidth: 1,
@@ -91,6 +94,12 @@ export const styles = StyleSheet.create({
     bodytxt:{
       fontSize:18,
       fontWeight:"500"
+    },
+    errortxt:{
+      color:"red",
+      paddingLeft:20,
+      paddingTop:10,
+      fontSize:16
     }
   
   });
