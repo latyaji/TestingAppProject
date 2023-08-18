@@ -100,6 +100,24 @@ export const styles = StyleSheet.create({
       paddingLeft:20,
       paddingTop:10,
       fontSize:16
+    },
+    showtxt:{
+      fontWeight:"bold",
+      color:"#000",
+      paddingRight:12
+    },
+    passwordfield:{
+      borderWidth:1,
+      justifyContent:"space-between",
+      flexDirection:"row",
+      alignItems:"center",
+     
+      marginTop: 12,
+      marginHorizontal: 12,
+      borderRadius: 6,
+      padding: Platform.OS === "ios" ? 13 : null,
+      color: "#000",
+      paddingLeft:12
     }
   
   });

@@ -1,8 +1,8 @@
-import { View, Text, TextInput, ScrollView } from 'react-native'
+import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { styles } from '../../globalstyle/Styles'
 
-export const Signup = () => {
+export const Signup = ({navigation}) => {
   const [allfielddata, setAllfielddata] = useState({
     name: '',
     email: '',
@@ -19,48 +19,79 @@ export const Signup = () => {
     confirmpassworderror: ''
   })
 
+  const [showpassword, setShowpassword] = useState(true)
 
-  const handleInput = (text, fieldname) => {
-
-    if (fieldname == 'firstname') {
-      { allfielderror.nameerror = !text ? `${fieldname} Field is required `: null }
-      if(text){
-        const charcter = /[^a-z]/gi
-        { allfielderror.nameerror = charcter.test(text) ? "numeric character not allowed" : null }
+  const handleallerrors = (text, fieldname) => {
+    let allerrors = {}
+    if (fieldname == 'name') {
+      const charcter = /[^a-z]/gi
+      { allerrors.nameerror = !text ? "Name Field is required" : null }
+      if (text) {
+        { allerrors.nameerror = charcter.test(text) ? "numeric character not allowed" : null }
 
       }
     }
+
     else if (fieldname == 'email') {
       const emailregex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      { allfielderror.emailerror = !text ? "Email Field is required" : null }
+      { allerrors.emailerror = !text ? "Email Field is required" : null }
       if (text) {
-        { allfielderror.emailerror = !emailregex.test(text) ? "Email must be valid" : null }
+        { allerrors.emailerror = !emailregex.test(text) ? "Email must be valid" : null }
 
       }
 
     }
     else if (fieldname == 'phone') {
-      { allfielderror.phoneerror = !text ? "Phone Field is required" : null }
-      if(text){
-        { text.length != 10 ? allfielderror.phoneerror = "Phone Field should be 10 character" : null }
+      { allerrors.phoneerror = !text ? "Phone Field is required" : null }
+      if (text) {
+        { text.length != 10 ? allerrors.phoneerror = "Phone Field should be 10 character" : null }
       }
 
     }
     else if (fieldname == 'password') {
-      const passwordregex =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=])/;
-      { allfielderror.passworderror = !text ? "Password Field is required" : null }
-      if(text){
-        { allfielderror.passworderror = !passwordregex.test(text) ? "Password should be 8 chanracter 1 lower 1 upper" : null }
+      const passwordregex = /^.{6}$/;
+      { allerrors.passworderror = !text ? "Password Field is required" : null }
+      if (text) {
+        { allerrors.passworderror = !passwordregex.test(text) ? "Password should be only 6 chanracter" : null }
       }
 
     }
-    else {
-      { allfielderror.confirmpassworderror = !text ? "Confirm Password Field is required" : null }
+    else if (fieldname == 'confirmpassword') {
+      { allerrors.confirmpassworderror = !text ? "Confirm Password Field is required" : null }
 
+      if (text) {
+        { allerrors.confirmpassworderror = text !== allfielddata.password ? "Confirm Password not matched with password" : null }
+      }
     }
-    setAllfielderror({ ...allfielderror, [fieldname]: text })
+    return allerrors
 
+  }
 
+  const handleInput = (text, fieldname) => {
+    const isValid = handleallerrors(text, fieldname)
+
+    setAllfielderror({ ...allfielderror, ...isValid })
+    setAllfielddata({ ...allfielddata, [fieldname]: text })
+   
+  }
+
+  const handleSignupbtn = () => {
+    let submittederror = {}
+    let errorset = false
+
+    for (let i in allfielddata) {
+      const checkallfield = handleallerrors(allfielddata[i], i)
+      submittederror = { ...submittederror, ...checkallfield }
+      if (!allfielddata[i]) {
+        errorset = true
+      }
+    }
+    setAllfielderror({ ...allfielderror, ...submittederror })
+
+    if (!errorset) {
+      navigation.navigate('Login')
+      console.log("data submitted successfully");
+    }
   }
 
   return (
@@ -70,7 +101,7 @@ export const Signup = () => {
       <TextInput
         placeholder='Enter Your name'
         style={styles.inputfield}
-        onChangeText={(text) => handleInput(text, fieldname = "firstname")}
+        onChangeText={(text) => handleInput(text, fieldname = "name")}
         defaultValue={allfielddata.name}
       />
       {allfielderror.nameerror ? <Text style={styles.errortxt}>{allfielderror.nameerror}</Text> : null}
@@ -80,6 +111,7 @@ export const Signup = () => {
         placeholder='Enter Your Email'
         style={styles.inputfield}
         onChangeText={(text) => handleInput(text, fieldname = "email")}
+        defaultValue={allfielddata.email}
       />
       {allfielderror.emailerror ? <Text style={styles.errortxt}>{allfielderror.emailerror}</Text> : null}
 
@@ -94,22 +126,50 @@ export const Signup = () => {
       {allfielderror.phoneerror ? <Text style={styles.errortxt}>{allfielderror.phoneerror}</Text> : null}
 
       <Text style={styles.labeltxt}>Enter Password</Text>
-      <TextInput
-        placeholder='Enter Your Password'
-        style={styles.inputfield}
-        onChangeText={(text) => handleInput(text, fieldname = "password")}
-      />
+      <View
+        style={styles.passwordfield}>
+        <TextInput
+          placeholder='Enter Your Password'
+          secureTextEntry={showpassword}
+          onChangeText={(text) => handleInput(text, fieldname = "password")}
+        />
+        <TouchableOpacity
+          onPress={() => setShowpassword(!showpassword)}
+        >
+          <Text style={styles.showtxt}>Show</Text>
+        </TouchableOpacity>
+      </View>
+
       {allfielderror.passworderror ? <Text style={styles.errortxt}>{allfielderror.passworderror}</Text> : null}
 
       <Text style={styles.labeltxt}>Enter Confirm Password</Text>
-      <TextInput
-        placeholder='Enter Your Confirm Password'
-        style={styles.inputfield}
-        onChangeText={(text) => handleInput(text, fieldname = "confirmpassword")}
-      />
+
+      <View
+        style={styles.passwordfield}>
+        <TextInput
+          placeholder='Enter Your Confirm Password'
+          secureTextEntry={showpassword}
+          onChangeText={(text) => handleInput(text, fieldname = "confirmpassword")}
+        />
+        <TouchableOpacity
+          onPress={() => setShowpassword(!showpassword)}
+        >
+          <Text style={styles.showtxt}>Show</Text>
+        </TouchableOpacity>
+      </View>
       {allfielderror.confirmpassworderror ? <Text style={styles.errortxt}>{allfielderror.confirmpassworderror}</Text> : null}
+      <TouchableOpacity
+        onPress={handleSignupbtn}
+        style={styles.buttoncontainer}
+      >
+        <Text style={styles.buttontxt}>Sign Up</Text>
+      </TouchableOpacity>
     </ScrollView>
 
   )
 }
+
+
+
+
 
