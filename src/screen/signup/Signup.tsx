@@ -1,8 +1,10 @@
 import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { styles } from '../../globalstyle/Styles'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const Signup = ({navigation}) => {
+
+export const Signup = ({ navigation }) => {
   const [allfielddata, setAllfielddata] = useState({
     name: '',
     email: '',
@@ -20,6 +22,8 @@ export const Signup = ({navigation}) => {
   })
 
   const [showpassword, setShowpassword] = useState(true)
+  const [userDataArray, setUserDataArray] = useState([]);
+
 
   const handleallerrors = (text, fieldname) => {
     let allerrors = {}
@@ -72,10 +76,10 @@ export const Signup = ({navigation}) => {
 
     setAllfielderror({ ...allfielderror, ...isValid })
     setAllfielddata({ ...allfielddata, [fieldname]: text })
-   
+
   }
 
-  const handleSignupbtn = () => {
+  const handleSignupbtn = async () => {
     let submittederror = {}
     let errorset = false
 
@@ -88,11 +92,29 @@ export const Signup = ({navigation}) => {
     }
     setAllfielderror({ ...allfielderror, ...submittederror })
 
+    // if (!errorset) {
+    //   let savedata = []
+    //   savedata.push(allfielddata)
+    //   setAllfielddata({ ...allfielddata, ...savedata })
+    //   navigation.navigate('Login')
+    // }
+
     if (!errorset) {
-      navigation.navigate('Login')
-      console.log("data submitted successfully");
+      try {
+        await AsyncStorage.setItem('user', JSON.stringify(allfielddata));
+        setUserDataArray([allfielddata, ...userDataArray]);
+        navigation.navigate('Login');
+
+      } catch (error) {
+        console.error('Error saving user data:', error);
+      }
+
+      const savedUserJSON = await AsyncStorage.getItem('user');
+      const savedUser = JSON.parse(savedUserJSON);
+      // console.log('Saved user data:', savedUser);
     }
   }
+  console.log("userDataArray=====>>>", userDataArray);
 
   return (
     <ScrollView>
