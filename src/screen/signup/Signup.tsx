@@ -22,8 +22,6 @@ export const Signup = ({ navigation }) => {
   })
 
   const [showpassword, setShowpassword] = useState(true)
-  const [userDataArray, setUserDataArray] = useState([]);
-
 
   const handleallerrors = (text, fieldname) => {
     let allerrors = {}
@@ -32,7 +30,6 @@ export const Signup = ({ navigation }) => {
       { allerrors.nameerror = !text ? "Name Field is required" : null }
       if (text) {
         { allerrors.nameerror = charcter.test(text) ? "numeric character not allowed" : null }
-
       }
     }
 
@@ -41,16 +38,13 @@ export const Signup = ({ navigation }) => {
       { allerrors.emailerror = !text ? "Email Field is required" : null }
       if (text) {
         { allerrors.emailerror = !emailregex.test(text) ? "Email must be valid" : null }
-
       }
-
     }
     else if (fieldname == 'phone') {
       { allerrors.phoneerror = !text ? "Phone Field is required" : null }
       if (text) {
         { text.length != 10 ? allerrors.phoneerror = "Phone Field should be 10 character" : null }
       }
-
     }
     else if (fieldname == 'password') {
       const passwordregex = /^.{6}$/;
@@ -58,17 +52,14 @@ export const Signup = ({ navigation }) => {
       if (text) {
         { allerrors.passworderror = !passwordregex.test(text) ? "Password should be only 6 chanracter" : null }
       }
-
     }
     else if (fieldname == 'confirmpassword') {
       { allerrors.confirmpassworderror = !text ? "Confirm Password Field is required" : null }
-
       if (text) {
         { allerrors.confirmpassworderror = text !== allfielddata.password ? "Confirm Password not matched with password" : null }
       }
     }
     return allerrors
-
   }
 
   const handleInput = (text, fieldname) => {
@@ -76,7 +67,6 @@ export const Signup = ({ navigation }) => {
 
     setAllfielderror({ ...allfielderror, ...isValid })
     setAllfielddata({ ...allfielddata, [fieldname]: text })
-
   }
 
   const handleSignupbtn = async () => {
@@ -92,29 +82,45 @@ export const Signup = ({ navigation }) => {
     }
     setAllfielderror({ ...allfielderror, ...submittederror })
 
-    // if (!errorset) {
-    //   let savedata = []
-    //   savedata.push(allfielddata)
-    //   setAllfielddata({ ...allfielddata, ...savedata })
-    //   navigation.navigate('Login')
-    // }
-
     if (!errorset) {
       try {
-        await AsyncStorage.setItem('user', JSON.stringify(allfielddata));
-        setUserDataArray([allfielddata, ...userDataArray]);
+        //  await AsyncStorage.clear();
+        const savedUserJSON = await AsyncStorage.getItem('user');
+        if (savedUserJSON) {
+          const getdata = JSON.parse(savedUserJSON) // ...[{},{},{}] // {},{},{}
+          //[...[{},{},{}],allfielddata] ,//[{},{},{},{}]
+          await AsyncStorage.setItem('user', JSON.stringify([...getdata, allfielddata]));
+        }
+        else {
+          await AsyncStorage.setItem('user', JSON.stringify([allfielddata]));
+        }
+        const alldata = await AsyncStorage.getItem('user');
+        console.log("allldata", alldata);
+
+        setAllfielddata({
+          name: '',
+          email: '',
+          phone: '',
+          password: '',
+          confirmpassword: ''
+        });
+
+        // Clear field errors
+        setAllfielderror({
+          nameerror: '',
+          emailerror: '',
+          phoneerror: '',
+          passworderror: '',
+          confirmpassworderror: ''
+        });
+
         navigation.navigate('Login');
 
       } catch (error) {
         console.error('Error saving user data:', error);
       }
-
-      const savedUserJSON = await AsyncStorage.getItem('user');
-      const savedUser = JSON.parse(savedUserJSON);
-      // console.log('Saved user data:', savedUser);
     }
   }
-  console.log("userDataArray=====>>>", userDataArray);
 
   return (
     <ScrollView>
@@ -143,6 +149,7 @@ export const Signup = ({ navigation }) => {
         maxLength={10}
         style={styles.inputfield}
         keyboardType={'phone-pad'}
+        defaultValue={allfielddata.phone}
         onChangeText={(text) => handleInput(text, fieldname = "phone")}
       />
       {allfielderror.phoneerror ? <Text style={styles.errortxt}>{allfielderror.phoneerror}</Text> : null}
@@ -153,6 +160,7 @@ export const Signup = ({ navigation }) => {
         <TextInput
           placeholder='Enter Your Password'
           secureTextEntry={showpassword}
+          defaultValue={allfielddata.password}
           onChangeText={(text) => handleInput(text, fieldname = "password")}
         />
         <TouchableOpacity
@@ -171,6 +179,7 @@ export const Signup = ({ navigation }) => {
         <TextInput
           placeholder='Enter Your Confirm Password'
           secureTextEntry={showpassword}
+          defaultValue={allfielddata.confirmpassword}
           onChangeText={(text) => handleInput(text, fieldname = "confirmpassword")}
         />
         <TouchableOpacity
