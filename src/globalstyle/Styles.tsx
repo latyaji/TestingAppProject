@@ -3,14 +3,18 @@ import {StyleSheet,Platform} from 'react-native'
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      marginTop: 30
+      
     },
     headertxt: {
-      fontSize: 26,
+      fontSize: 36,
+      paddingHorizontal:20,
       fontWeight: "bold",
       alignSelf: "center",
       color: "#116D6E",
       paddingVertical:26
+    },
+    headercontainer:{
+        backgroundColor:"orange"
     },
     labeltxt: {
       marginTop: 12,
@@ -45,7 +49,8 @@ export const styles = StyleSheet.create({
       width: "80%",
       alignSelf: "center",
       marginTop: 20,
-      borderRadius: 12
+      borderRadius: 12,
+      marginBottom:30
     },
     refecebuttoncontainer: {
       backgroundColor: "#214151",
@@ -64,16 +69,21 @@ export const styles = StyleSheet.create({
     titletxt:{
       fontSize:15,
       fontWeight:"bold",
-      color:"#000"
+      color:"#000",
+
+      
 
     },
     apidatacontainer:{
-      flexDirection:"row",
-      flexWrap:"wrap",
+      // flexDirection:"row",
       borderWidth:1,
-      padding:12,
-      margin:12,
-      borderRadius:12
+      padding:10,
+      marginRight:20,
+      borderRadius:12,
+      justifyContent:"center",
+      alignSelf:"center",
+      marginHorizontal:20,
+      width:"100%"
     },
     alldetailcontainer:{
       padding:12,
@@ -118,6 +128,28 @@ export const styles = StyleSheet.create({
       padding: Platform.OS === "ios" ? 13 : null,
       color: "#000",
       paddingLeft:12
+    },
+    mobileimages:{
+      width:100,
+      height:100
+    },
+    cardtxt:{
+      fontSize:25,
+      color:"#000",
+      fontWeight:"bold",
+      
+    },
+    cartcontainer:{
+      // flex:1,
+      justifyContent:"center",
+      alignItems:"center",
+      borderWidth:1,
+      margin:20,
+      padding:20
+    },
+    img:{
+      width:100,
+      height:80
     }
   
   });
