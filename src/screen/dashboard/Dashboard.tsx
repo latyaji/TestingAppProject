@@ -47,7 +47,7 @@ export const Dashboard = ({ navigation }) => {
     setApidata(unfavlistdata)
 
     try {
-      //await AsyncStorage.clear();
+      // await AsyncStorage.clear();
       const getfavdata = await AsyncStorage.getItem('favdata');
       if (getfavdata) {
         const getdata = JSON.parse(getfavdata)
@@ -90,20 +90,20 @@ export const Dashboard = ({ navigation }) => {
         <TouchableOpacity
           style={styles.buttoncontainer}
           onPress={() => navigation.navigate('Favouriteitem')}
-        >
+          >
           <Text style={styles.buttontxt}>View Favourate List</Text>
-        </TouchableOpacity>
-        {apidata.map((item, index) => (
+         </TouchableOpacity>
+            {apidata.map((item, index) => (
           <View
-            key={index.toString()}
-            style={{ flexDirection: "row", justifyContent: "space-between", borderWidth: 1, margin: 12, padding: 12 }}>
-            <TouchableOpacity
+             key={index.toString()}
+             style={styles.shareconatiner}>
+          <TouchableOpacity
               onPress={() => share(item)}
             >
-              <TouchableOpacity
+            <TouchableOpacity
                 onPress={() => handlefavIcon(item.id, index)}
               >
-                <Image source={unfavicon} style={{ width: 40, height: 40 }} />
+             <Image source={unfavicon} style={{ width: 40, height: 40 }} />
               </TouchableOpacity>
               <Text style={styles.titleemailtxt}>{item.email}</Text>
               <Text style={styles.titletxt}>{item.first_name}</Text>

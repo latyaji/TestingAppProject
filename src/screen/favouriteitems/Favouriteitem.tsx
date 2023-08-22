@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Image ,SafeAreaView} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../../globalstyle/Styles';
@@ -34,28 +34,31 @@ export const Favouriteitem = ({ navigation }) => {
     }, []);
 
     return (
-        <View>
-            <Text style={styles.headertxt}>Favourite item</Text>
-            {favData.map((item, index) => (
-                <View
-                    key={index.toString()}
-                    style={{ flexDirection: "row", justifyContent: "space-between", borderWidth: 1, margin: 12, padding: 12 }}>
-                    <View>
-                        <TouchableOpacity
-                         onPress={() => removeFromFavorites(item.id)}
-                          >
-                        <Image source={favicon} style={styles.icon} />
-                        </TouchableOpacity>
-                        <Text style={styles.titletxt}>{item.email}</Text>
-                        <Text style={styles.titletxt}>{item.first_name}</Text>
-                        <Text style={styles.titletxt}>{item.last_name}</Text>
+        <SafeAreaView>
+            <View>
+                <Text style={styles.headertxt}>Favourite item</Text>
+                {favData.map((item, index) => (
+                    <View
+                        key={index.toString()}
+                        style={styles.shareconatiner}>
+                        <View>
+                            <TouchableOpacity
+                                onPress={() => removeFromFavorites(item.id)}
+                            >
+                                <Image source={favicon} style={styles.icon} />
+                            </TouchableOpacity>
+                            <Text style={styles.titletxt}>{item.email}</Text>
+                            <Text style={styles.titletxt}>{item.first_name}</Text>
+                            <Text style={styles.titletxt}>{item.last_name}</Text>
+                        </View>
+                        <View>
+                            <Image source={{ uri: item.avatar }} style={styles.img} />
+                        </View>
                     </View>
-                    <View>
-                        <Image source={{ uri: item.avatar }} style={styles.img} />
-                    </View>
-                </View>
-            ))}
-        </View>
+                ))}
+            </View>
+        </SafeAreaView>
+
     )
 }
 
