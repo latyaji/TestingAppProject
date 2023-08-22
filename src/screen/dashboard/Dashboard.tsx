@@ -1,79 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import {
-//   SafeAreaView,
-//   Text,
-//   Platform,
-//   KeyboardAvoidingView,
-//   ScrollView,
-//   TouchableOpacity,
-//   ActivityIndicator,
-// } from 'react-native';
-
-// import { styles } from '../../globalstyle/Styles';
-// import axios from 'axios';
-
-// // const baseUrl = 'https://jsonplaceholder.typicode.com/posts';
-// const baseUrl = 'https://reqres.in/api/users?page=2';
-
-
-// export const Dashboard = ({ navigation }) => {
-//   const [apidata, setApidata] = useState([]);
-//   const [loading, setLoading] = useState(false);
-
-//   useEffect(() => {
-//     fetchUser();
-//   }, []);
-
-//   const fetchUser = async () => {
-//     try {
-//       setLoading(true);
-//       const url = `${baseUrl}`;
-//       const response = await axios.get(url);
-//       setApidata(response.data);
-//     } catch (error) {
-//       console.log('error======>>>>>', error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const getdata = (item) => {
-//     navigation.navigate('Listdata', { item });
-//   };
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <KeyboardAvoidingView
-//         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-//         keyboardVerticalOffset={90}
-//         style={{ flex: 1 }}
-//       >
-//         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-//           <Text style={styles.headertxt}>Welcome to Dashboard</Text>
-//           <TouchableOpacity style={styles.refecebuttoncontainer} onPress={fetchUser}>
-//             <Text style={styles.buttontxt}>Refresh</Text>
-//           </TouchableOpacity>
-//           {loading ? (
-//             <ActivityIndicator size="large" color="grey" style={styles.loadingIndicator} />
-//           ) : (
-//             apidata.map((item, id) => (
-//               <TouchableOpacity
-//                 style={styles.apidatacontainer}
-//                 key={id.toString()}
-//                 onPress={() => getdata(item)} >
-//                 <Text style={styles.titletxt}>{item.title}</Text>
-//                 <Text>{item.body}</Text>
-//               </TouchableOpacity>
-//             ))
-//           )}
-//         </ScrollView>
-//       </KeyboardAvoidingView>
-//     </SafeAreaView>
-//   );
-// };
-
-
-
 import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
@@ -83,26 +7,21 @@ import {
   Image,
   View
 } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Share from 'react-native-share';
+import { unfavicon } from '../../assest';
 
 import { styles } from '../../globalstyle/Styles';
-import axios from 'axios';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const baseUrl = 'https://reqres.in/api/users?page=2';
-
 
 export const Dashboard = ({ navigation }) => {
   const [apidata, setApidata] = useState([]);
 
-
   useEffect(() => {
-
     fetchUser();
   }, []);
-
-
 
   const fetchUser = async () => {
     try {
@@ -122,16 +41,13 @@ export const Dashboard = ({ navigation }) => {
       console.log('error======>>>>>', error);
     }
   };
-  
 
   const handlefavIcon = async (id, index) => {
     const unfavlistdata = apidata.filter((item) => item.id != id)
-
     setApidata(unfavlistdata)
 
     try {
-       await AsyncStorage.clear();
-
+      //await AsyncStorage.clear();
       const getfavdata = await AsyncStorage.getItem('favdata');
       if (getfavdata) {
         const getdata = JSON.parse(getfavdata)
@@ -141,17 +57,33 @@ export const Dashboard = ({ navigation }) => {
       else {
         await AsyncStorage.setItem('favdata', JSON.stringify([apidata[index]]));
       }
-      // console.log("ddddd",await AsyncStorage.getItem('favdata'));
-
-
 
     } catch (error) {
       console.error('Error saving user data:', error);
     }
-
-
-
   }
+  const share = async (item) => {
+
+    const options = {
+      id: `${item.id}`,
+      message:
+        'Deserunt ea sint magna dolor incididunt sit culpa id laborum cupidatat commodo do sint.',
+      url: `${item.avatar}`,
+      email: `${item.email}`,
+      subject: 'Eiusmod esse veniam esse.',
+      firstname: `${item.first_name}`,
+      lastname: `${item.last_name}`,
+      recipient: '919988998899',
+    };
+
+
+    try {
+      const res = await Share.open(options);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -161,30 +93,27 @@ export const Dashboard = ({ navigation }) => {
         >
           <Text style={styles.buttontxt}>View Favourate List</Text>
         </TouchableOpacity>
-
         {apidata.map((item, index) => (
-
           <View
             key={index.toString()}
             style={{ flexDirection: "row", justifyContent: "space-between", borderWidth: 1, margin: 12, padding: 12 }}>
-            <View>
+            <TouchableOpacity
+              onPress={() => share(item)}
+            >
               <TouchableOpacity
                 onPress={() => handlefavIcon(item.id, index)}
               >
-                <Image source={require('../../assest/unfav.png')} style={{ width: 20, height: 20 }} />
+                <Image source={unfavicon} style={{ width: 40, height: 40 }} />
               </TouchableOpacity>
-              <Text style={styles.titletxt}>{item.email}</Text>
+              <Text style={styles.titleemailtxt}>{item.email}</Text>
               <Text style={styles.titletxt}>{item.first_name}</Text>
               <Text style={styles.titletxt}>{item.last_name}</Text>
-            </View>
+            </TouchableOpacity>
             <View>
               <Image source={{ uri: item.avatar }} style={styles.img} />
             </View>
           </View>
         ))}
-
-
-
       </ScrollView>
     </SafeAreaView>
   );

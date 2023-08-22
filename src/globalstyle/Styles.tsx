@@ -71,7 +71,11 @@ export const styles = StyleSheet.create({
       fontWeight:"bold",
       color:"#000",
 
-      
+    },
+    titleemailtxt:{
+      fontSize:20,
+      fontWeight:"bold",
+      color:"#000",
 
     },
     apidatacontainer:{
@@ -150,6 +154,11 @@ export const styles = StyleSheet.create({
     img:{
       width:100,
       height:80
+    },
+    icon:{
+      width:30,
+      height:30,
+      tintColor:"orange"
     }
   
   });
