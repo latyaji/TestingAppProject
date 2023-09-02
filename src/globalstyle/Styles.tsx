@@ -35,6 +35,11 @@ export const styles = StyleSheet.create({
     marginRight:20,
     fontWeight:"bold",
     color:"#000"
+  },
+  apitxt :{
+    color:"green",
+    fontSize:30,
+    fontWeight:"bold"
   }
  
 });

@@ -1,70 +1,34 @@
-import { View, Text, Image, ScrollView } from 'react-native'
 import React from 'react'
-import Header from './components/redux/Header'
-import { styles } from './src/globalstyle/Styles'
-import Product from './components/redux/Product'
+
+import ProductWraaper from './components/ProductWraaper'
+import UserList from './components/UserList'
+
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+
+
+const Stack = createNativeStackNavigator()
 
 const App = () => {
-
-  const Products = [
-    {
-      name: "Samsung",
-      color: "white",
-      price: 1200,
-      image: "https://birchtree.me/content/images/2021/06/007-copy.jpg"
-    },
-    {
-      name: "Vivo",
-      color: "blue",
-      price: 12200,
-      image: "https://media.istockphoto.com/id/1190965421/photo/a-hand-holding-and-showing-black-mobile-phone-with-blank-screen-in-cafe.webp?b=1&s=170667a&w=0&k=20&c=-Sp-xgF2aslP6mn0jWokW6mCQ2ib_lU2jD-z7SPNpLY="
-    },
-    {
-      name: "Nokia",
-      color: "black",
-      price: 33200,
-      image: "https://i.etsystatic.com/20789136/r/il/b7bec9/3258444860/il_fullxfull.3258444860_6lwa.jpg"
-    },
-    {
-      name: "Narzo",
-      color: "yellow",
-      price: 13200,
-      image: "https://i.etsystatic.com/36437479/r/il/b19fda/4051455314/il_570xN.4051455314_ob31.jpg"
-    },
-    {
-      name: "Samsung1",
-      color: "white",
-      price: 1200,
-      image: "https://birchtree.me/content/images/2021/06/007-copy.jpg"
-    },
-    {
-      name: "Vivo1",
-      color: "blue",
-      price: 12200,
-      image: "https://media.istockphoto.com/id/1190965421/photo/a-hand-holding-and-showing-black-mobile-phone-with-blank-screen-in-cafe.webp?b=1&s=170667a&w=0&k=20&c=-Sp-xgF2aslP6mn0jWokW6mCQ2ib_lU2jD-z7SPNpLY="
-    },
-    {
-      name: "Nokia1",
-      color: "black",
-      price: 33200,
-      image: "https://i.etsystatic.com/20789136/r/il/b7bec9/3258444860/il_fullxfull.3258444860_6lwa.jpg"
-    },
-    {
-      name: "Narzo1",
-      color: "yellow",
-      price: 13200,
-      image: "https://i.etsystatic.com/36437479/r/il/b19fda/4051455314/il_570xN.4051455314_ob31.jpg"
-    },
-
-  ]
   return (
-    <View>
-      <Header />
-      <ScrollView>
-        {Products.map((item) =><Product item={item} />)}
-      </ScrollView>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+          <Stack.Screen name='Home' component={ProductWraaper}/>
+          <Stack.Screen name = 'User' component={UserList}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
 
 export default App
+
+
+// Note : Hum SAGA api implementation kai liye use krte hai redux mai .async operation perform krwane kai liye
+// Saga sirf Redux kai sath use hogi na ki ReactNative k sath
+//Steps 
+
+// 1 install Saga => 
+// yarn add redux-saga then run command npm react-native run-android
+
+// 2 . Make Saga file 
+// 3. Configure SAGA with redux Store  
