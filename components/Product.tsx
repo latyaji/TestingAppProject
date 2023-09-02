@@ -1,7 +1,7 @@
 import { View, Text, Image, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { styles } from '../../src/globalstyle/Styles'
-import { addToCart, removeFromCart } from './action'
+import { styles } from '../src/globalstyle/Styles'
+import { addToCart, removeFromCart } from './redux/action'
 import { useDispatch, useSelector } from 'react-redux'
 
 

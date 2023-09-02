@@ -1,8 +1,8 @@
 import { View, Text, Image, ScrollView } from 'react-native'
 import React from 'react'
-import Header from './components/redux/Header'
+import Header from './components/Header'
 import { styles } from './src/globalstyle/Styles'
-import Product from './components/redux/Product'
+import Product from './components/Product'
 
 const App = () => {
 
