@@ -1,178 +1,176 @@
-// /**
-//  * Sample React Native App
-//  * https://github.com/facebook/react-native
-//  *
-//  * @format
-//  */
-
-// import React from 'react';
-// import type {PropsWithChildren} from 'react';
-// import {
-//   SafeAreaView,
-//   ScrollView,
-//   StatusBar,
-//   StyleSheet,
-//   Text,
-//   useColorScheme,
-//   View,
-// } from 'react-native';
-
-// import {
-//   Colors,
-//   DebugInstructions,
-//   Header,
-//   LearnMoreLinks,
-//   ReloadInstructions,
-// } from 'react-native/Libraries/NewAppScreen';
-
-// type SectionProps = PropsWithChildren<{
-//   title: string;
-// }>;
-
-// function Section({children, title}: SectionProps): JSX.Element {
-//   const isDarkMode = useColorScheme() === 'dark';
-//   return (
-//     <View style={styles.sectionContainer}>
-//       <Text
-//         style={[
-//           styles.sectionTitle,
-//           {
-//             color: isDarkMode ? Colors.white : Colors.black,
-//           },
-//         ]}>
-//         {title}
-//       </Text>
-//       <Text
-//         style={[
-//           styles.sectionDescription,
-//           {
-//             color: isDarkMode ? Colors.light : Colors.dark,
-//           },
-//         ]}>
-//         {children}
-//       </Text>
-//     </View>
-//   );
-// }
-
-// function App(): JSX.Element {
-//   const isDarkMode = useColorScheme() === 'dark';
-
-//   const backgroundStyle = {
-//     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-//   };
-
-//   return (
-//     <SafeAreaView style={backgroundStyle}>
-//       <StatusBar
-//         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-//         backgroundColor={backgroundStyle.backgroundColor}
-//       />
-//       <ScrollView
-//         contentInsetAdjustmentBehavior="automatic"
-//         style={backgroundStyle}>
-//         <Header />
-//         <View
-//           style={{
-//             backgroundColor: isDarkMode ? Colors.black : Colors.white,
-//           }}>
-//           <Section title="Step One">
-//             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-//             screen and then come back to see your edits.
-//           </Section>
-//           <Section title="See Your Changes">
-//             <ReloadInstructions />
-//           </Section>
-//           <Section title="Debug">
-//             <DebugInstructions />
-//           </Section>
-//           <Section title="Learn More">
-//             Read the docs to discover what to do next:
-//           </Section>
-//           <LearnMoreLinks />
-//         </View>
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   sectionContainer: {
-//     marginTop: 32,
-//     paddingHorizontal: 24,
-//   },
-//   sectionTitle: {
-//     fontSize: 24,
-//     fontWeight: '600',
-//   },
-//   sectionDescription: {
-//     marginTop: 8,
-//     fontSize: 18,
-//     fontWeight: '400',
-//   },
-//   highlight: {
-//     fontWeight: '700',
-//   },
-// });
-
-// export default App;
-
-
-import { View, Text } from 'react-native'
-import React from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Login,Dashboard,Listdata } from './src/screen'
-import { NavigationContainer } from '@react-navigation/native';
-
-const Stack = createNativeStackNavigator();
+import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { styles } from './src/globalstyle/Styles'
 
 const App = () => {
+  const [allfielddata, setAllfielddata] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmpassword: ''
+  })
+
+  const [allfielderror, setAllfielderror] = useState({
+    nameerror: '',
+    emailerror: '',
+    phoneerror: '',
+    passworderror: '',
+    confirmpassworderror: ''
+  })
+
+  const [showpassword, setShowpassword] = useState(true)
+
+  const handleallerrors = (text, fieldname) => {
+    let allerrors = {}
+    if (fieldname == 'name') {
+      const charcter = /[^a-z]/gi
+      { allerrors.nameerror = !text ? "Name Field is required" : null }
+      if (text) {
+        { allerrors.nameerror = charcter.test(text) ? "numeric character not allowed" : null }
+
+      }
+    }
+
+    else if (fieldname == 'email') {
+      const emailregex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      { allerrors.emailerror = !text ? "Email Field is required" : null }
+      if (text) {
+        { allerrors.emailerror = !emailregex.test(text) ? "Email must be valid" : null }
+
+      }
+
+    }
+    else if (fieldname == 'phone') {
+      { allerrors.phoneerror = !text ? "Phone Field is required" : null }
+      if (text) {
+        { text.length != 10 ? allerrors.phoneerror = "Phone Field should be 10 character" : null }
+      }
+
+    }
+    else if (fieldname == 'password') {
+      const passwordregex = /^.{6}$/;
+      { allerrors.passworderror = !text ? "Password Field is required" : null }
+      if (text) {
+        { allerrors.passworderror = !passwordregex.test(text) ? "Password should be only 6 chanracter" : null }
+      }
+
+    }
+    else if (fieldname == 'confirmpassword') {
+      { allerrors.confirmpassworderror = !text ? "Confirm Password Field is required" : null }
+
+      if (text) {
+        { text != allfielddata.password ? "Confirm Password not matched with password" : null }
+      }
+
+    }
+    else {
+      console.log("data successfully save");
+
+    }
+    return allerrors
+
+  }
+
+  const handleInput = (text, fieldname) => {
+    const isValid = handleallerrors(text, fieldname)
+
+    setAllfielderror({ ...allfielderror, ...isValid })
+    setAllfielddata({ ...allfielddata, [fieldname]: text })
+
+  }
+
+  const handleSignupbtn = () => {
+    let submittederror = {}
+    let errorset = false
+
+    for (let i in allfielddata) {
+      const checkallfield = handleallerrors(allfielddata[i], i)
+      submittederror = { ...submittederror, ...checkallfield }
+      if (!allfielddata[i]) {
+        errorset = true
+      }
+    }
+    setAllfielderror({ ...allfielderror, ...submittederror })
+
+    if (!errorset) {
+      console.log("data submitted successfully");
+    }
+  }
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false
-        }}>
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="Listdata" component={Listdata} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ScrollView>
+      <Text style={styles.headertxt}>Sign Up Form</Text>
+      <Text style={styles.labeltxt}>Enter name</Text>
+      <TextInput
+        placeholder='Enter Your name'
+        style={styles.inputfield}
+        onChangeText={(text) => handleInput(text, fieldname = "name")}
+        defaultValue={allfielddata.name}
+      />
+      {allfielderror.nameerror ? <Text style={styles.errortxt}>{allfielderror.nameerror}</Text> : null}
+
+      <Text style={styles.labeltxt}>Enter Email</Text>
+      <TextInput
+        placeholder='Enter Your Email'
+        style={styles.inputfield}
+        onChangeText={(text) => handleInput(text, fieldname = "email")}
+        defaultValue={allfielddata.email}
+      />
+      {allfielderror.emailerror ? <Text style={styles.errortxt}>{allfielderror.emailerror}</Text> : null}
+
+      <Text style={styles.labeltxt}>Enter Phone </Text>
+      <TextInput
+        placeholder='Enter Your Phone'
+        maxLength={10}
+        style={styles.inputfield}
+        keyboardType={'phone-pad'}
+        onChangeText={(text) => handleInput(text, fieldname = "phone")}
+      />
+      {allfielderror.phoneerror ? <Text style={styles.errortxt}>{allfielderror.phoneerror}</Text> : null}
+
+      <Text style={styles.labeltxt}>Enter Password</Text>
+      <View
+        style={styles.passwordfield}>
+        <TextInput
+          placeholder='Enter Your Password'
+          secureTextEntry={showpassword}
+          onChangeText={(text) => handleInput(text, fieldname = "password")}
+        />
+        <TouchableOpacity
+          onPress={() => setShowpassword(!showpassword)}
+        >
+          <Text style={styles.showtxt}>Show</Text>
+        </TouchableOpacity>
+      </View>
+
+      {allfielderror.passworderror ? <Text style={styles.errortxt}>{allfielderror.passworderror}</Text> : null}
+
+      <Text style={styles.labeltxt}>Enter Confirm Password</Text>
+
+      <View
+        style={styles.passwordfield}>
+        <TextInput
+          placeholder='Enter Your Confirm Password'
+          secureTextEntry={showpassword}
+          onChangeText={(text) => handleInput(text, fieldname = "confirmpassword")}
+        />
+        <TouchableOpacity
+          onPress={() => setShowpassword(!showpassword)}
+        >
+          <Text style={styles.showtxt}>Show</Text>
+        </TouchableOpacity>
+      </View>
+      {allfielderror.confirmpassworderror ? <Text style={styles.errortxt}>{allfielderror.confirmpassworderror}</Text> : null}
+      <TouchableOpacity
+        onPress={handleSignupbtn}
+        style={styles.buttoncontainer}
+      >
+        <Text style={styles.buttontxt}>Sign Up</Text>
+      </TouchableOpacity>
+    </ScrollView>
+
   )
 }
 
 export default App
-
-
-// import * as React from 'react';
-// import { View, Text } from 'react-native';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import { Splash, Home, Payment, Onboarding, Document, PandoucmentUplaod, BankAccountdetails, Address,Submitdata } from './src/screens';
-
-
-// const Stack = createNativeStackNavigator();
-
-// function App() {
-//   return (
-//     <NavigationContainer>
-//       <Stack.Navigator
-//         screenOptions={{
-//           headerShown: false
-//         }}>
-//         <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
-//         <Stack.Screen name="Home" component={Home} />
-//         <Stack.Screen name="Payment" component={Payment} />
-//         <Stack.Screen name="Onboarding" component={Onboarding} />
-//         <Stack.Screen name="PandoucmentUplaod" component={PandoucmentUplaod} />
-//         <Stack.Screen name="Document" component={Document} />
-//         <Stack.Screen name="BankAccountdetails" component={BankAccountdetails} /> 
-//         <Stack.Screen name="Address" component={Address} />
-//         <Stack.Screen name="Submitdata" component={Submitdata} />
-
-//       </Stack.Navigator>
-//     </NavigationContainer>
-//   );
-// }
-
-// export default App;

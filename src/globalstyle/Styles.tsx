@@ -91,6 +91,27 @@ export const styles = StyleSheet.create({
     bodytxt:{
       fontSize:18,
       fontWeight:"500"
+    },
+    passwordfield:{
+      borderWidth: 1,
+      marginTop: 12,
+      marginHorizontal: 12,
+      borderRadius: 6,
+      padding: Platform.OS === "ios" ? 13 : null,
+      color: "#000",
+      justifyContent:"space-between",
+      flexDirection:"row",
+      alignItems:"center"
+    },
+    showtxt:{
+      marginRight:20
+    },
+    errortxt:{
+      color:"red",
+      marginHorizontal:20,
+      marginVertical:10,
+      fontSize:18,
+      fontWeight:"bold"
     }
   
   });
