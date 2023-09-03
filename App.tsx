@@ -1,101 +1,74 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Touchable, TouchableOpacity } from "react-native"
+import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import { styles } from "./src/globalstyle/Styles";
-
-
+import { all } from "axios";
 
 
 const App = () => {
-  const [allfileddata, setAllfielddata] = useState({
+
+  const [alldata, setAlldata] = useState({
     name: '',
-    email: ''
+
   })
 
-  const [allfielderrors, setAllfielderror] = useState({
-    nameerror: '',
-    emailerror: ''
+  const [errordata, setErrors] = useState({
+    nameerror: ''
   })
 
-
-  const handleAllerrors = (text, fieldname) => {
-
+  const handleerrors = (text, fieldname) => {
     let errors = {}
     if (fieldname == "name") {
-      errors.nameerror = !text ? "Name field is required" : null;
-    }
-    else if (fieldname == "email") {
-      errors.emailerror = !text ? "Email field is required" : null 
+      errors.nameerror = !text ? "Name Field is required" : null
     }
     return errors
+
   }
-
   const handleInput = (text, fieldname) => {
-    const valid = handleAllerrors(text, fieldname)
 
-    setAllfielderror({ ...allfielderrors, ...valid })
-    setAllfielddata({...allfileddata , [fieldname] : text})
+    const isValid = handleerrors(text, fieldname)
+
+    setErrors({ ...errordata, ...isValid })
+    setAlldata({ ...alldata, [fieldname]: text })
 
   }
 
   const handleSubmit = () => {
-    
-    let submiterror = {}
+    let submiterrors = {}
     let errorset = false
 
-    for(let i in allfileddata){
-      const checkallfield = handleAllerrors(allfileddata[i],i)
-      submiterror = {...submiterror , ...checkallfield }
-
-      if(!allfileddata[i]){
+    for (let i in alldata) {
+      const checkerrors = handleerrors(alldata[i], [i])
+      submiterrors = { ...submiterrors, ...checkerrors }
+      if (!alldata[i]) {
         errorset = true
       }
     }
 
-    setAllfielderror({...allfielderrors, ...submiterror})
+    setErrors({ ...errordata, ...submiterrors })
 
-    if(!errorset){
-      console.log("data saved without errors",allfileddata);
-
-      let storedata = []
-      storedata = storedata.push(allfileddata)
-      setAllfielddata({ ...allfileddata, ...storedata })
-      console.log("allfileddataallfileddataallfileddataallfileddata=====",allfileddata);
-      
-
-      
+    if (!errorset) {
+      console.log("dadadadadadadadad", alldata)
     }
-    
   }
-
   return (
     <View>
-      <Text>Enter Your Name</Text>
+      <Text>Enter name</Text>
       <TextInput
-        style={styles.inputfield}
         placeholder="Enter Your Name"
         onChangeText={(text) => handleInput(text, fieldname = "name")}
-        defaultValue={allfileddata.name}
-      />
-      {allfielderrors.nameerror ? <Text style={styles.errortxt}>{allfielderrors.nameerror}</Text> : null}
-
-      <Text>Enter Your Email</Text>
-      <TextInput
         style={styles.inputfield}
-        placeholder="Enter Your Email"
-        onChangeText={(text) => handleInput(text, fieldname = "email")}
-        defaultValue={allfileddata.email}
       />
-      {allfielderrors.emailerror ? <Text style={styles.errortxt}>{allfielderrors.emailerror}</Text> : null} 
+      {errordata.nameerror ? <Text style={styles.errortxt}>{errordata.nameerror}</Text> : null}
       <TouchableOpacity
-        style={styles.buttoncontainer}
         onPress={handleSubmit}
+        style={styles.buttoncontainer}
       >
-        <Text style={styles.buttontxt}>Submit</Text>
+        <Text
+          style={styles.buttontxt}
+        >Submit</Text>
       </TouchableOpacity>
-
     </View>
   )
 }
 
 export default App
-
