@@ -1,176 +1,101 @@
-import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import { styles } from './src/globalstyle/Styles'
+import React, { useState } from "react";
+import { View, Text, TextInput, Touchable, TouchableOpacity } from "react-native"
+import { styles } from "./src/globalstyle/Styles";
+
+
+
 
 const App = () => {
-  const [allfielddata, setAllfielddata] = useState({
+  const [allfileddata, setAllfielddata] = useState({
     name: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmpassword: ''
+    email: ''
   })
 
-  const [allfielderror, setAllfielderror] = useState({
+  const [allfielderrors, setAllfielderror] = useState({
     nameerror: '',
-    emailerror: '',
-    phoneerror: '',
-    passworderror: '',
-    confirmpassworderror: ''
+    emailerror: ''
   })
 
-  const [showpassword, setShowpassword] = useState(true)
 
-  const handleallerrors = (text, fieldname) => {
-    let allerrors = {}
-    if (fieldname == 'name') {
-      const charcter = /[^a-z]/gi
-      { allerrors.nameerror = !text ? "Name Field is required" : null }
-      if (text) {
-        { allerrors.nameerror = charcter.test(text) ? "numeric character not allowed" : null }
+  const handleAllerrors = (text, fieldname) => {
 
-      }
+    let errors = {}
+    if (fieldname == "name") {
+      errors.nameerror = !text ? "Name field is required" : null;
     }
-
-    else if (fieldname == 'email') {
-      const emailregex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      { allerrors.emailerror = !text ? "Email Field is required" : null }
-      if (text) {
-        { allerrors.emailerror = !emailregex.test(text) ? "Email must be valid" : null }
-
-      }
-
+    else if (fieldname == "email") {
+      errors.emailerror = !text ? "Email field is required" : null 
     }
-    else if (fieldname == 'phone') {
-      { allerrors.phoneerror = !text ? "Phone Field is required" : null }
-      if (text) {
-        { text.length != 10 ? allerrors.phoneerror = "Phone Field should be 10 character" : null }
-      }
-
-    }
-    else if (fieldname == 'password') {
-      const passwordregex = /^.{6}$/;
-      { allerrors.passworderror = !text ? "Password Field is required" : null }
-      if (text) {
-        { allerrors.passworderror = !passwordregex.test(text) ? "Password should be only 6 chanracter" : null }
-      }
-
-    }
-    else if (fieldname == 'confirmpassword') {
-      { allerrors.confirmpassworderror = !text ? "Confirm Password Field is required" : null }
-
-      if (text) {
-        { text != allfielddata.password ? "Confirm Password not matched with password" : null }
-      }
-
-    }
-    else {
-      console.log("data successfully save");
-
-    }
-    return allerrors
-
+    return errors
   }
 
   const handleInput = (text, fieldname) => {
-    const isValid = handleallerrors(text, fieldname)
+    const valid = handleAllerrors(text, fieldname)
 
-    setAllfielderror({ ...allfielderror, ...isValid })
-    setAllfielddata({ ...allfielddata, [fieldname]: text })
+    setAllfielderror({ ...allfielderrors, ...valid })
+    setAllfielddata({...allfileddata , [fieldname] : text})
 
   }
 
-  const handleSignupbtn = () => {
-    let submittederror = {}
+  const handleSubmit = () => {
+    
+    let submiterror = {}
     let errorset = false
 
-    for (let i in allfielddata) {
-      const checkallfield = handleallerrors(allfielddata[i], i)
-      submittederror = { ...submittederror, ...checkallfield }
-      if (!allfielddata[i]) {
+    for(let i in allfileddata){
+      const checkallfield = handleAllerrors(allfileddata[i],i)
+      submiterror = {...submiterror , ...checkallfield }
+
+      if(!allfileddata[i]){
         errorset = true
       }
     }
-    setAllfielderror({ ...allfielderror, ...submittederror })
 
-    if (!errorset) {
-      console.log("data submitted successfully");
+    setAllfielderror({...allfielderrors, ...submiterror})
+
+    if(!errorset){
+      console.log("data saved without errors",allfileddata);
+
+      let storedata = []
+      storedata = storedata.push(allfileddata)
+      setAllfielddata({ ...allfileddata, ...storedata })
+      console.log("allfileddataallfileddataallfileddataallfileddata=====",allfileddata);
+      
+
+      
     }
+    
   }
 
   return (
-    <ScrollView>
-      <Text style={styles.headertxt}>Sign Up Form</Text>
-      <Text style={styles.labeltxt}>Enter name</Text>
+    <View>
+      <Text>Enter Your Name</Text>
       <TextInput
-        placeholder='Enter Your name'
         style={styles.inputfield}
+        placeholder="Enter Your Name"
         onChangeText={(text) => handleInput(text, fieldname = "name")}
-        defaultValue={allfielddata.name}
+        defaultValue={allfileddata.name}
       />
-      {allfielderror.nameerror ? <Text style={styles.errortxt}>{allfielderror.nameerror}</Text> : null}
+      {allfielderrors.nameerror ? <Text style={styles.errortxt}>{allfielderrors.nameerror}</Text> : null}
 
-      <Text style={styles.labeltxt}>Enter Email</Text>
+      <Text>Enter Your Email</Text>
       <TextInput
-        placeholder='Enter Your Email'
         style={styles.inputfield}
+        placeholder="Enter Your Email"
         onChangeText={(text) => handleInput(text, fieldname = "email")}
-        defaultValue={allfielddata.email}
+        defaultValue={allfileddata.email}
       />
-      {allfielderror.emailerror ? <Text style={styles.errortxt}>{allfielderror.emailerror}</Text> : null}
-
-      <Text style={styles.labeltxt}>Enter Phone </Text>
-      <TextInput
-        placeholder='Enter Your Phone'
-        maxLength={10}
-        style={styles.inputfield}
-        keyboardType={'phone-pad'}
-        onChangeText={(text) => handleInput(text, fieldname = "phone")}
-      />
-      {allfielderror.phoneerror ? <Text style={styles.errortxt}>{allfielderror.phoneerror}</Text> : null}
-
-      <Text style={styles.labeltxt}>Enter Password</Text>
-      <View
-        style={styles.passwordfield}>
-        <TextInput
-          placeholder='Enter Your Password'
-          secureTextEntry={showpassword}
-          onChangeText={(text) => handleInput(text, fieldname = "password")}
-        />
-        <TouchableOpacity
-          onPress={() => setShowpassword(!showpassword)}
-        >
-          <Text style={styles.showtxt}>Show</Text>
-        </TouchableOpacity>
-      </View>
-
-      {allfielderror.passworderror ? <Text style={styles.errortxt}>{allfielderror.passworderror}</Text> : null}
-
-      <Text style={styles.labeltxt}>Enter Confirm Password</Text>
-
-      <View
-        style={styles.passwordfield}>
-        <TextInput
-          placeholder='Enter Your Confirm Password'
-          secureTextEntry={showpassword}
-          onChangeText={(text) => handleInput(text, fieldname = "confirmpassword")}
-        />
-        <TouchableOpacity
-          onPress={() => setShowpassword(!showpassword)}
-        >
-          <Text style={styles.showtxt}>Show</Text>
-        </TouchableOpacity>
-      </View>
-      {allfielderror.confirmpassworderror ? <Text style={styles.errortxt}>{allfielderror.confirmpassworderror}</Text> : null}
+      {allfielderrors.emailerror ? <Text style={styles.errortxt}>{allfielderrors.emailerror}</Text> : null} 
       <TouchableOpacity
-        onPress={handleSignupbtn}
         style={styles.buttoncontainer}
+        onPress={handleSubmit}
       >
-        <Text style={styles.buttontxt}>Sign Up</Text>
+        <Text style={styles.buttontxt}>Submit</Text>
       </TouchableOpacity>
-    </ScrollView>
 
+    </View>
   )
 }
 
 export default App
+
