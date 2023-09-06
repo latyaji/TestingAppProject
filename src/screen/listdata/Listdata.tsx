@@ -1,22 +1,27 @@
-import { View, Text, FlatList, TouchableOpacity, TextInput, Button } from 'react-native';
 import React, { useEffect, useState } from 'react';
-
+import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { styles } from '../../globalstyle/Styles';
+import { apiurl, datanotfound, movilist } from '../../constant/Constant'
 
-export const Listdata = ({navigation}) => {
+export const Listdata = ({ navigation }) => {
     const [originalData, setOriginalData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [value, setValue] = useState('');
-    const [visibleItems, setVisibleItems] = useState(10); // Number of initially visible items
+    const [visibleItems, setVisibleItems] = useState(8);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [showAllData, setShowAllData] = useState(false);
 
     const getMoviesFromApiAsync = async () => {
         try {
-            const response = await fetch(
-                'https://api.themoviedb.org/3/movie/top_rated?api_key=c5a4fbf90fb9ccaa1d34802b47e675a6'
-            );
+            const response = await fetch(`${apiurl}`);
             const json = await response.json();
             setOriginalData(json.results);
-            setFilteredData(json.results.slice(0, visibleItems)); // Show the first 10 items initially
+            const newData = json.results.slice(0, visibleItems * currentPage);
+            setFilteredData(newData);
+
+            if (newData.length === json.results.length) {
+                setShowAllData(true);
+            }
         } catch (error) {
             console.error(error);
         }
@@ -24,7 +29,7 @@ export const Listdata = ({navigation}) => {
 
     useEffect(() => {
         getMoviesFromApiAsync();
-    }, []);
+    }, [currentPage]);
 
     const searchItems = (text) => {
         const newData = originalData.filter((item) => {
@@ -36,52 +41,62 @@ export const Listdata = ({navigation}) => {
                 return true;
             }
         });
-        setFilteredData(newData.slice(0, visibleItems));
+        setFilteredData(newData.slice(0, visibleItems * currentPage));
         setValue(text);
     };
-    
 
     const loadMoreItems = () => {
-        setVisibleItems(visibleItems + 10);
-        setFilteredData(originalData.slice(0, visibleItems + 10));
+        setCurrentPage(currentPage + 1);
     };
 
-    const renderHeader = () => {
+    const EmptyListMessage = ({ item }) => {
         return (
+            <Text style={styles.emptyListStyle}
+                onPress={() => getItem(item)}>
+                {datanotfound}
+            </Text>
+        );
+    };
+
+    const renderItems = ({ item }) => {
+        return (
+            <View style={styles.listcontainer}>
+                <Text
+                    style={styles.labeltxt}
+                >{item.title}</Text>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Showalldeatils', { item })}
+                    style={styles.buttoncontainer}>
+                    <Text style={styles.buttontxt}>View Details</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    const getItem = (item) => {
+        alert('Id : ' + item.id + ' Title : ' + item.title);
+    };
+
+    return (
+        <View style={{ flex: 1 }}>
+            <Text style={styles.headertxt}>{movilist}</Text>
             <TextInput
                 style={styles.inputfield}
                 placeholder="Enter Your Movie Name ......."
                 onChangeText={(text) => searchItems(text)}
                 defaultValue={value}
             />
-        );
-    };
-
-    return (
-        <View>
-            <Text style={styles.headertxt}>Movie List</Text>
             <FlatList
                 data={filteredData}
-                renderItem={({ item }) => (
-                    <View style={styles.listcontainer}>
-                        <Text style={styles.labeltxt}>{item.title}</Text>
-                        <TouchableOpacity 
-                          onPress={()=>navigation.navigate('Showalldeatils')}
-                         style={styles.buttoncontainer}>
-                            <Text style={styles.buttontxt}>View Details</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
+                renderItem={renderItems}
                 keyExtractor={(item) => item.id.toString()}
-                ListHeaderComponent={renderHeader}
+                ListEmptyComponent={EmptyListMessage}
             />
-            {filteredData.length < originalData.length && (
-
+            {!showAllData && (
                 <TouchableOpacity
                     onPress={loadMoreItems}
-                    style={styles.buttoncontainer}
-                >
-                    <Text style={styles.buttontxt}>View More</Text>
+                    style={styles.viewmorebuttoncontainer}>
+                    <Text style={styles.viewmorebuttontxt}>View More</Text>
                 </TouchableOpacity>
             )}
         </View>

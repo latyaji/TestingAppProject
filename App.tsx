@@ -8,11 +8,8 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false
-         }}>
-        <Stack.Screen name="Listdata" component={Listdata} /> 
+      <Stack.Navigator>
+        <Stack.Screen name="Listdata" component={Listdata} options={{ headerShown: false }}/> 
         <Stack.Screen name="Showalldeatils" component={Showalldeatils} /> 
       </Stack.Navigator>
     </NavigationContainer>
