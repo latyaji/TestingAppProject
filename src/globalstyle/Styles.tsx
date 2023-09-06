@@ -15,8 +15,8 @@ export const styles = StyleSheet.create({
     labeltxt: {
       marginTop: 12,
       color: "#000",
-      fontSize: 18,
-      paddingHorizontal: 12,
+      fontSize: 20,
+      // paddingHorizontal: 12,
       fontWeight: "bold"
     },
     inputfield: {
@@ -26,7 +26,8 @@ export const styles = StyleSheet.create({
       borderRadius: 6,
       padding: Platform.OS === "ios" ? 13 : null,
       color: "#000",
-      paddingLeft:12
+      paddingLeft:12,
+      marginBottom:20
     },
     passwordinputfield:{
       borderWidth: 1,
@@ -41,10 +42,8 @@ export const styles = StyleSheet.create({
   
     buttoncontainer: {
       backgroundColor: "#214151",
-      padding: 12,
-      width: "80%",
-      alignSelf: "center",
-      marginTop: 20,
+      padding: 5,
+      // width: "40%",
       borderRadius: 12
     },
     refecebuttoncontainer: {
@@ -100,6 +99,13 @@ export const styles = StyleSheet.create({
       paddingLeft:20,
       paddingTop:10,
       fontSize:16
+    },
+    listcontainer:{
+      borderBottomWidth:1,
+      justifyContent:"space-between",
+      flexDirection:"row",
+      padding:5,
+      flexWrap:"wrap"
     }
   
   });
